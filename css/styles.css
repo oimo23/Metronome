@@ -46,6 +46,7 @@ body {
 .right_side_wrapper {
 	position : relative ;
 	top : -5% ;
+	max-width: 100%;
 }
 
 .flex_list {
@@ -135,4 +136,16 @@ body {
 .anime1 .frame1,
 .anime1 .frame2 {
 	display : none ;
+}
+
+@media screen and (max-width:600px){
+	.wrapper {
+		width : 100% ;
+		display : block ;
+	}
+
+	.left_side,
+	.right_side {
+		width : 100%;
+	}
 }

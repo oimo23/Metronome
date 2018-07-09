@@ -94,18 +94,6 @@
 </div>
 
 <script>
-var tempo = 120; //テンポ（1分間に何拍するか）
-var beat  = 4; //拍子（指定した拍数ごとに高いビープ音を鳴らす）
-var frame_cnt = 0;
-isPlaying = false;
-
-// 高めの音
-var high = "UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQ0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000";
-
-// それぞれ Audio オブジェクト生成
-var lowPlayer = new Audio("click.wav");
-var highPlayer = new Audio("data:audio/wav;base64," + high);
-
 /*-----------------------------------------------
 // スマホではtouchend,PCではclickを取得するようにする    
 -------------------------------------------------*/
@@ -114,45 +102,30 @@ var isTouchDevice = (('ontouchstart' in window) || window.DocumentTouch && docum
 //デバイス判定によるイベントの決定
 var eventType = (isTouchDevice) ? 'touchend' : 'click';
 
-function metronome(tempo, beat){
-	
-	function playOn(tempo) {
-		ms = ( 60 / tempo ) * 1000;
-		lowPlayer.play();
-		
-		frame_cnt = frame_cnt + 1;
-		
-		$('.anime1 .frame0').hide();
-		
-		if( frame_cnt % 2 == 0 ) {
-			$('.anime1 .frame1').hide();
-			$('.anime1 .frame2').show();
-		} else {
-			$('.anime1 .frame2').hide();
-			$('.anime1 .frame1').show();
-		}
-		
-	}
-
-	// 最初の1音
-	playOn(tempo);
-
-	// メトロノーム設定（正確にはひとつのInterval内で処理を書いたほうがよいが簡略化のためにふたつのIntervalで設定）
-	// low の再生　拍子内の1拍目はミュートする
-	timer1 = setInterval( function(){ playOn(tempo); }, ms);
-	
-}
-
 /*-----------------------------------------------
-// 再生ボタンを押してメトロノームをスタート    
+// 初期設定   
 -------------------------------------------------*/
+const context = new AudioContext();
+const osc = context.createOscillator();
+const gain = context.createGain();
+
+// 音程
+osc.frequency.value = 1200;
+// 音量を0にしておく
+gain.gain.value = 0;
+// 設定を適用
+osc.connect(gain).connect(context.destination);
+// 裏で鳴らしておく
+osc.start();
+
+// テンポ設定
+let tempo = 60;
+
 $('.play').on(eventType, function(){
-	if ( !isPlaying ) {
-		isPlaying = true;
-		$('.play').hide();
-		$('.stop').show();
-		metronome(tempo, beat);
-	}
+	isPlaying = true;
+	$('.play').hide();
+	$('.stop').show();
+	playOn(120);
 });
 
 /*-----------------------------------------------
@@ -169,47 +142,62 @@ $('.stop').on(eventType, function(){
 });
 
 /*-----------------------------------------------
-// 速度変更    
+// テンポ操作
 -------------------------------------------------*/
 $('.tempo1_up').on(eventType, function(){
 	tempo = tempo + 1;
 	$('.tempo').text(tempo);
-	if(isPlaying) {
-		clearInterval(timer1);
-		metronome(tempo, beat);
-	}
 });
 
-$('.tempo1_down').on(eventType, function(){
-	tempo = tempo - 1;
-	$('.tempo').text(tempo);
-	if(isPlaying) {
-		clearInterval(timer1);
-		metronome(tempo, beat);
-	}
-});
+// Memorize AudioContext start time in DOMHighResTimeStamp
+const baseTimeStamp = performance.now() - context.currentTime * 1000;
 
-$('.tempo5_up').on(eventType, function(){
-	tempo = tempo + 5;
-	$('.tempo').text(tempo);
-	if(isPlaying) {
-		clearInterval(timer1);
-		metronome(tempo, beat);
-	}
-});
+// Function to return context's currentTime in DOMHighResTimeStamp
+function currentTimeStamp() {
+  return baseTimeStamp + context.currentTime * 1000;
+}
 
-$('.tempo1_down').on(eventType, function(){
-	tempo = tempo - 5;
-	$('.tempo').text(tempo);
-	if(isPlaying) {
-		clearInterval(timer1);
-		metronome(tempo, beat);
-	}
-});
+// Function to convert DOMHighResTimeStamp to AudioContext currenTime
+function timeStampToAudioContextTime(timeStamp) {
+  return (timeStamp - baseTimeStamp) / 1000;
+}
 
+// The last scheduled click's time in DOMHighResTimeStamp
+let lastClickTimeStamp = performance.now();
+
+/*-----------------------------------------------
+// スケジューリング
+-------------------------------------------------*/
+function playOn(tempo) {
+	let tick = 60 * 1000 / tempo;  // for tempo=120
+
+	timer1 = setInterval(() => {
+		const now = currentTimeStamp();
+
+	  	for (let nextClickTimeStamp = lastClickTimeStamp + tick;
+	    	nextClickTimeStamp < now + 1500;
+	    	nextClickTimeStamp += tick) {
+
+	  		// 次回の発音時間
+	   		const nextClickTime = timeStampToAudioContextTime(nextClickTimeStamp);
+			
+			if ( isPlaying = false ) {
+				// 次のクリックの発音時間に音量を1にする
+				gain.gain.setValueAtTime(0, nextClickTime);
+				console.log('f');
+			} else {
+				// 次のクリックの発音時間に音量を1にする
+				gain.gain.setValueAtTime(1, nextClickTime);
+				console.log('t');
+			}
+
+			//　その後素早く(0.05秒で)音の減衰をさせる(ピーではなくピッという音にするため)
+			gain.gain.linearRampToValueAtTime(0, nextClickTime + 0.05);
+	    	
+	    	// 今鳴らし終えた地点を最後の発音として記録
+	    	lastClickTimeStamp = nextClickTimeStamp;
+	  }
+	}, tick/2);
+}
 
 </script>
-
-
-</body>
-</html>
