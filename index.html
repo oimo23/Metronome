@@ -19,7 +19,7 @@
 <script src="./js/utils.js" type="text/javascript"></script>
 <script src="./js/materialize.js" type="text/javascript"></script>
 
-<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
 
 <meta name="viewport" content="width=device-width,initial-scale=1">
 	
@@ -41,7 +41,7 @@
 	
 		<div class="right_side_wrapper">
 	
-			<h1 class="center logo">Goodfun Metronome</h1>
+			<h1 class="center logo">Metronome</h1>
 		
 			<div class="display">
 				<div class="tempo">120</div>
@@ -54,8 +54,8 @@
 			<div class="flex_list ctrl_panel">
 				<div class="player">
 					<ul class="flex_list">
-						<li class="play"><i class="fa fa-play" aria-hidden="true"></i></li>
-						<li class="stop"><i class="fa fa-stop" aria-hidden="true"></i></li>
+						<li class="play"><i class="fas fa-play"></i></li>
+						<li class="stop"><i class="fas fa-stop"></i></li>
 					</ul>
 				</div>
 				
@@ -72,20 +72,29 @@
 			</div>
 			
 			<div class="prog center">		
-				
+				<!--
 				<p class="training_trigger">Training mode</p>
 				<div class="training">			
 					<input type="text">～<input type="text">
 					
 					<input type="text">bars
 				</div>
-		
-				<p class="silent_trigger">Silent mode</p>
-				<div class="silent">		
-					<input type="text">bar<input type="text">
+				-->
+
+				<div class="silent">
+				  <div class="input-field col s12">
+				    <select class="silent_select">
+				      <option value="0" selected>Enable Silent Bars</option>
+				      <option value="1">1</option>
+				      <option value="2">2</option>
+				      <option value="3">3</option>
+				      <option value="4">4</option>
+				    </select>
+				  </div>
 				</div>
 		
 			</div>
+
 		
 		</div>		
 	
@@ -93,111 +102,4 @@
 
 </div>
 
-<script>
-/*-----------------------------------------------
-// スマホではtouchend,PCではclickを取得するようにする    
--------------------------------------------------*/
-var isTouchDevice = (('ontouchstart' in window) || window.DocumentTouch && document instanceof DocumentTouch);
-
-//デバイス判定によるイベントの決定
-var eventType = (isTouchDevice) ? 'touchend' : 'click';
-
-/*-----------------------------------------------
-// 初期設定   
--------------------------------------------------*/
-const context = new AudioContext();
-const osc = context.createOscillator();
-const gain = context.createGain();
-
-// 音程
-osc.frequency.value = 1200;
-// 音量を0にしておく
-gain.gain.value = 0;
-// 設定を適用
-osc.connect(gain).connect(context.destination);
-// 裏で鳴らしておく
-osc.start();
-
-// テンポ設定
-let tempo = 60;
-
-$('.play').on(eventType, function(){
-	isPlaying = true;
-	$('.play').hide();
-	$('.stop').show();
-	playOn(120);
-});
-
-/*-----------------------------------------------
-// 停止処理   
--------------------------------------------------*/
-$('.stop').on(eventType, function(){
-	$('.stop').hide();
-	$('.play').show();
-	isPlaying = false;
-	clearInterval(timer1);
-	$('.anime1 .frame1').hide();
-	$('.anime1 .frame2').hide();
-	$('.anime1 .frame0').show();
-});
-
-/*-----------------------------------------------
-// テンポ操作
--------------------------------------------------*/
-$('.tempo1_up').on(eventType, function(){
-	tempo = tempo + 1;
-	$('.tempo').text(tempo);
-});
-
-// Memorize AudioContext start time in DOMHighResTimeStamp
-const baseTimeStamp = performance.now() - context.currentTime * 1000;
-
-// Function to return context's currentTime in DOMHighResTimeStamp
-function currentTimeStamp() {
-  return baseTimeStamp + context.currentTime * 1000;
-}
-
-// Function to convert DOMHighResTimeStamp to AudioContext currenTime
-function timeStampToAudioContextTime(timeStamp) {
-  return (timeStamp - baseTimeStamp) / 1000;
-}
-
-// The last scheduled click's time in DOMHighResTimeStamp
-let lastClickTimeStamp = performance.now();
-
-/*-----------------------------------------------
-// スケジューリング
--------------------------------------------------*/
-function playOn(tempo) {
-	let tick = 60 * 1000 / tempo;  // for tempo=120
-
-	timer1 = setInterval(() => {
-		const now = currentTimeStamp();
-
-	  	for (let nextClickTimeStamp = lastClickTimeStamp + tick;
-	    	nextClickTimeStamp < now + 1500;
-	    	nextClickTimeStamp += tick) {
-
-	  		// 次回の発音時間
-	   		const nextClickTime = timeStampToAudioContextTime(nextClickTimeStamp);
-			
-			if ( isPlaying = false ) {
-				// 次のクリックの発音時間に音量を1にする
-				gain.gain.setValueAtTime(0, nextClickTime);
-				console.log('f');
-			} else {
-				// 次のクリックの発音時間に音量を1にする
-				gain.gain.setValueAtTime(1, nextClickTime);
-				console.log('t');
-			}
-
-			//　その後素早く(0.05秒で)音の減衰をさせる(ピーではなくピッという音にするため)
-			gain.gain.linearRampToValueAtTime(0, nextClickTime + 0.05);
-	    	
-	    	// 今鳴らし終えた地点を最後の発音として記録
-	    	lastClickTimeStamp = nextClickTimeStamp;
-	  }
-	}, tick/2);
-}
-
-</script>
+<script src="./js/main.js" type="text/javascript"></script>

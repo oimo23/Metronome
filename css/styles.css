@@ -1,6 +1,10 @@
 @charset "utf-8";
 /* 基本設定 */
 
+* {
+	box-sizing: border-box;
+}
+
 canvas{
     -moz-user-select: none;
     -webkit-user-select: none;
@@ -60,7 +64,7 @@ body {
 
 .tempo {
 	padding : 5px;
-	font-size: 200px;
+	font-size: 15em;
 	font-weight : bold;
 	text-align: right;
 	text-align: center ;
@@ -110,11 +114,6 @@ body {
 	cursor : pointer ;
 }
 
-.training,
-.silent {
-	display: none ;
-}
-
 .ctrl_panel {
 	justify-content: center;
 	align-items: center;
@@ -147,5 +146,13 @@ body {
 	.left_side,
 	.right_side {
 		width : 100%;
+	}
+
+	.tempo {
+		font-size: 12em;
+	}
+
+	.anime1 {
+	width : 60% ;
 	}
 }
