@@ -48,10 +48,10 @@ $('.play').click(function(){
 
 	if ( first_click == true ) {
 		// 裏で鳴らしておく
-		osc.start();
+		osc.start(0);
 
 		// 裏で鳴らしておく
-		osc2.start();
+		osc2.start(0);
 	}
 
 	first_click = false;
