@@ -10,10 +10,51 @@ let isTouchDevice = (('ontouchstart' in window) || window.DocumentTouch && docum
 //デバイス判定によるイベントの決定
 let eventType = (isTouchDevice) ? 'touchend' : 'click';
 
+let first_click = true;
+
+/*-----------------------------------------------
+// 低い音の準備
+-------------------------------------------------*/
+const context = new(window.AudioContext||window.webkitAudioContext)();
+const osc = context.createOscillator();
+const gain = context.createGain();
+
+// 音程
+osc.frequency.value = 1200;
+// 音量を0にしておく
+gain.gain.value = 0;
+// 設定を適用
+osc.connect(gain).connect(context.destination);
+
+
+/*-----------------------------------------------
+// 高い音の準備
+-------------------------------------------------*/
+const context2 = new AudioContext();
+const osc2 = context2.createOscillator();
+const gain2 = context2.createGain();
+
+// 音程
+osc2.frequency.value = 1400;
+// 音量を0にしておく
+gain2.gain.value = 0;
+// 設定を適用
+osc2.connect(gain2).connect(context2.destination);
+
 /*-----------------------------------------------
 // 再生処理 
 -------------------------------------------------*/
 $('.play').click(function(){
+
+	if ( first_click == true ) {
+		// 裏で鳴らしておく
+		osc.start();
+
+		// 裏で鳴らしておく
+		osc2.start();
+	}
+
+	first_click = false;
 	isPlaying = true;
 	$('.play').hide();
 	$('.stop').show();
@@ -38,39 +79,6 @@ $('.stop').on(eventType, function(){
 	$('.anime1 .frame2').hide();
 	$('.anime1 .frame0').show();
 });
-
-
-/*-----------------------------------------------
-// 低い音の準備
--------------------------------------------------*/
-const context = new(window.AudioContext||window.webkitAudioContext)();
-const osc = context.createOscillator();
-const gain = context.createGain();
-
-// 音程
-osc.frequency.value = 1200;
-// 音量を0にしておく
-gain.gain.value = 0;
-// 設定を適用
-osc.connect(gain).connect(context.destination);
-// 裏で鳴らしておく
-osc.start();
-
-/*-----------------------------------------------
-// 高い音の準備
--------------------------------------------------*/
-const context2 = new AudioContext();
-const osc2 = context2.createOscillator();
-const gain2 = context2.createGain();
-
-// 音程
-osc2.frequency.value = 1400;
-// 音量を0にしておく
-gain2.gain.value = 0;
-// 設定を適用
-osc2.connect(gain2).connect(context2.destination);
-// 裏で鳴らしておく
-osc2.start();
 
 // テンポ設定
 let tempo = 120;
@@ -127,8 +135,6 @@ function playOn(tempo) {
 	timer1 = setInterval(() => {
 		let tick = 60 * 1000 / tempo;  // for tempo=120
 		let silent_bar = $(".silent_select").val();
-
-		console.log(tempo);
 
 		const now = current_time();
 
