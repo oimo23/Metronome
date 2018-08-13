@@ -168,12 +168,11 @@ $('.play').click(function(){
 
   first_click = false;
   isPlaying = true;
+
   $('.play').hide();
   $('.stop').show();
-  playOn(tempo);
-});
 
-$('.tempo').click(function(){
+  playOn(tempo);
 
 });
 
@@ -183,10 +182,19 @@ $('.tempo').click(function(){
 $('.stop').on(eventType, function(){
   $('.stop').hide();
   $('.play').show();
+
   isPlaying = false;
   clearInterval(timer1);
+  
   gain.gain.cancelScheduledValues(context.currentTime);
   gain2.gain.cancelScheduledValues(context.currentTime);
+
+  // 音量を0にしておく
+gain.gain.value = 0;
+
+// 音量を0にしておく
+	gain2.gain.value = 0;
+	  
   $('.anime1 .frame1').hide();
   $('.anime1 .frame2').hide();
   $('.anime1 .frame0').show();
@@ -267,7 +275,9 @@ function playOn(tempo) {
 
           //　その後素早く(0.05秒で)音の減衰をさせる(ピーではなくピッという音にするため)
           gain2.gain.linearRampToValueAtTime(0, nextClickTime + 0.05);
+
           } else {    
+          
           gain.gain.setValueAtTime(1, nextClickTime);
 
           //　その後素早く(0.05秒で)音の減衰をさせる(ピーではなくピッという音にするため)
