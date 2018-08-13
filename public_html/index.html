@@ -188,13 +188,7 @@ $('.stop').on(eventType, function(){
   
   gain.gain.cancelScheduledValues(context.currentTime);
   gain2.gain.cancelScheduledValues(context.currentTime);
-
-  // 音量を0にしておく
-gain.gain.value = 0;
-
-// 音量を0にしておく
-	gain2.gain.value = 0;
-	  
+  
   $('.anime1 .frame1').hide();
   $('.anime1 .frame2').hide();
   $('.anime1 .frame0').show();
