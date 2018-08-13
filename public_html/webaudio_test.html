@@ -1,4 +1,106 @@
-テスト
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>メトロノーム</title>
+<meta name="description" content="">
+<meta name="keywords" content="">
+<meta name="robots" contents="noindex,nofollow">
+
+<link href="https://fonts.googleapis.com/css?family=Pacifico" rel="stylesheet">
+
+<link href="./css/materialize.css" rel="stylesheet" type="text/css" media="all">
+<link href="./css/common.css" rel="stylesheet" type="text/css" media="all">
+<link href="./css/styles.css" rel="stylesheet" type="text/css" media="all">
+<link rel="shortcut icon" href="./images/favicon.ico"> 
+
+<!-- jQuery library (served from Google) -->
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js" type="text/javascript"></script>
+<script src="./js/materialize.js" type="text/javascript"></script>
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
+
+<meta name="viewport" content="width=device-width,initial-scale=1">
+  
+</head>
+<body>
+
+<div class="wrapper">
+
+  <div class="left_side">
+    <!--<p class="flash">●</p>-->
+    <div class="anime1">
+      <p class="frame0"><img src="./images/crossing0.png"></p>
+      <p class="frame1"><img src="./images/crossing1.png"></p>
+      <p class="frame2"><img src="./images/crossing2.png"></p>
+    </div>
+  </div>
+  
+  <div class="right_side">  
+  
+    <div class="right_side_wrapper">
+  
+      <h1 class="center logo">Metronome</h1>
+    
+      <div class="display">
+        <div class="tempo">120</div>
+      </div>
+      
+      <div class="time_signature">
+        <p class="center">4/4</p>
+      </div>  
+      
+      <div class="flex_list ctrl_panel">
+        <div class="player">
+          <ul class="flex_list">
+            <li class="play"><i class="fas fa-play"></i></li>
+            <li class="stop"><i class="fas fa-stop"></i></li>
+          </ul>
+        </div>
+        
+        <div class="speed_ctrl">
+          <ul class="flex_list">
+            <li class="tempo1_down"><</li>
+            <li class="tempo1_up">></li>
+          </ul>
+          <ul class="flex_list">
+            <li class="tempo5_down">-5</li>
+            <li class="tempo5_up">+5</li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="prog center">   
+        <!--
+        <p class="training_trigger">Training mode</p>
+        <div class="training">      
+          <input type="text">～<input type="text">
+          
+          <input type="text">bars
+        </div>
+        -->
+
+        <div class="silent">
+          <div class="input-field col s12">
+            <select class="silent_select">
+              <option value="0" selected>Enable Silent Bars</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+            </select>
+          </div>
+        </div>
+    
+      </div>
+
+    
+    </div>    
+  
+  </div>
+
+</div>
+
 
 <script>
 /*-----------------------------------------------
