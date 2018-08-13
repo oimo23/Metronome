@@ -26,9 +26,87 @@
 </head>
 <body>
 
-<p class="play">再生</p>
+<div class="wrapper">
+
+	<div class="left_side">
+		<!--<p class="flash">●</p>-->
+		<div class="anime1">
+			<p class="frame0"><img src="./images/crossing0.png"></p>
+			<p class="frame1"><img src="./images/crossing1.png"></p>
+			<p class="frame2"><img src="./images/crossing2.png"></p>
+		</div>
+	</div>
+	
+	<div class="right_side">	
+	
+		<div class="right_side_wrapper">
+	
+			<h1 class="center logo">Metronome</h1>
+		
+			<div class="display">
+				<div class="tempo">120</div>
+			</div>
+			
+			<div class="time_signature">
+				<p class="center">4/4</p>
+			</div>	
+			
+			<div class="flex_list ctrl_panel">
+				<div class="player">
+					<ul class="flex_list">
+						<li class="play"><i class="fas fa-play"></i></li>
+						<li class="stop"><i class="fas fa-stop"></i></li>
+					</ul>
+				</div>
+				
+				<div class="speed_ctrl">
+					<ul class="flex_list">
+						<li class="tempo1_down"><</li>
+						<li class="tempo1_up">></li>
+					</ul>
+					<ul class="flex_list">
+						<li class="tempo5_down">-5</li>
+						<li class="tempo5_up">+5</li>
+					</ul>
+				</div>
+			</div>
+			
+			<div class="prog center">		
+				<!--
+				<p class="training_trigger">Training mode</p>
+				<div class="training">			
+					<input type="text">～<input type="text">
+					
+					<input type="text">bars
+				</div>
+				-->
+
+				<div class="silent">
+				  <div class="input-field col s12">
+				    <select class="silent_select">
+				      <option value="0" selected>Enable Silent Bars</option>
+				      <option value="1">1</option>
+				      <option value="2">2</option>
+				      <option value="3">3</option>
+				      <option value="4">4</option>
+				    </select>
+				  </div>
+				</div>
+		
+			</div>
+
+		
+		</div>		
+	
+	</div>
+
+</div>
 
 <script>
+$(document).ready(function(){
+	$('select').formSelect();
+});
+
 /*-----------------------------------------------
 // スマホではtouchend,PCではclickを取得するようにする    
 -------------------------------------------------*/
@@ -38,9 +116,6 @@ let isTouchDevice = (('ontouchstart' in window) || window.DocumentTouch && docum
 let eventType = (isTouchDevice) ? 'touchend' : 'click';
 
 let first_click = true;
-
-// テンポ設定
-let tempo = 120;
 
 /*-----------------------------------------------
 // 低い音の準備
@@ -91,6 +166,70 @@ $('.play').click(function(){
 	playOn(tempo);
 });
 
+$('.tempo').click(function(){
+
+});
+
+/*-----------------------------------------------
+// 停止処理   
+-------------------------------------------------*/
+$('.stop').on(eventType, function(){
+	$('.stop').hide();
+	$('.play').show();
+	isPlaying = false;
+	clearInterval(timer1);
+	gain.gain.cancelScheduledValues(context.currentTime);
+	gain2.gain.cancelScheduledValues(context.currentTime);
+	$('.anime1 .frame1').hide();
+	$('.anime1 .frame2').hide();
+	$('.anime1 .frame0').show();
+});
+
+// テンポ設定
+let tempo = 120;
+
+/*-----------------------------------------------
+// テンポ操作
+-------------------------------------------------*/
+$('.tempo1_up').on(eventType, function(){
+	tempo = tempo + 1;
+	$('.tempo').text(tempo);
+});
+
+$('.tempo1_down').on(eventType, function(){
+	tempo = tempo - 1;
+	$('.tempo').text(tempo);
+});
+
+$('.tempo5_up').on(eventType, function(){
+	tempo = tempo + 5;
+	$('.tempo').text(tempo);
+});
+
+$('.tempo5_down').on(eventType, function(){
+	tempo = tempo - 5;
+	$('.tempo').text(tempo);
+});
+
+/*-----------------------------------------------
+// クロックの設定
+-------------------------------------------------*/
+// Memorize AudioContext start time in DOMHighResTimeStamp
+const base_time = performance.now() - context.currentTime * 1000;
+
+// Function to return context's currentTime in DOMHighResTimeStamp
+function current_time() {
+  return base_time + context.currentTime * 1000;
+}
+
+// Function to convert DOMHighResTimeStamp to AudioContext currenTime
+function timestamp_to_audioctx(timeStamp) {
+  return (timeStamp - base_time) / 1000;
+}
+
+/*-----------------------------------------------
+// スケジューリング
+-------------------------------------------------*/
 function playOn(tempo) {
 	let count = 0;
 	let silent_stock = 0;
