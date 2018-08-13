@@ -19,14 +19,6 @@ const context = new(window.AudioContext||window.webkitAudioContext)();
 const osc = context.createOscillator();
 const gain = context.createGain();
 
-// 音程
-osc.frequency.value = 1200;
-// 音量を0にしておく
-gain.gain.value = 0;
-// 設定を適用
-osc.connect(gain).connect(context.destination);
-
-
 /*-----------------------------------------------
 // 高い音の準備
 -------------------------------------------------*/
@@ -34,18 +26,24 @@ const context2 = new AudioContext();
 const osc2 = context2.createOscillator();
 const gain2 = context2.createGain();
 
-// 音程
-osc2.frequency.value = 1400;
-// 音量を0にしておく
-gain2.gain.value = 0;
-// 設定を適用
-osc2.connect(gain2).connect(context2.destination);
-
 /*-----------------------------------------------
 // 再生処理 
 -------------------------------------------------*/
 $('.play').click(function(){
 
+	// 音程
+	osc.frequency.value = 1200;
+	// 音量を0にしておく
+	gain.gain.value = 0;
+	// 設定を適用
+	osc.connect(gain).connect(context.destination);
+
+	// 音程
+	osc2.frequency.value = 1400;
+	// 音量を0にしておく
+	gain2.gain.value = 0;
+	// 設定を適用
+	osc2.connect(gain2).connect(context2.destination);
 	if ( first_click == true ) {
 		// 裏で鳴らしておく
 		osc.start(0);
@@ -126,6 +124,7 @@ function timestamp_to_audioctx(timeStamp) {
 // スケジューリング
 -------------------------------------------------*/
 function playOn(tempo) {
+
 	let count = 0;
 	let silent_stock = 0;
 
