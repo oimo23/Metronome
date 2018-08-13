@@ -30,7 +30,7 @@ osc.connect(gain).connect(context.destination);
 /*-----------------------------------------------
 // 高い音の準備
 -------------------------------------------------*/
-const context2 = new AudioContext();
+const context = new(window.AudioContext||window.webkitAudioContext)();
 const osc2 = context2.createOscillator();
 const gain2 = context2.createGain();
 
