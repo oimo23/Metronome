@@ -40,7 +40,7 @@
 	
 		<div class="right_side_wrapper">
 	
-			<h1 class="center logo">Metronome</h1>
+			<h1 class="center logo">Meetronome</h1>
 		
 			<div class="display">
 				<div class="tempo">120</div>
@@ -139,7 +139,21 @@ const gain2 = context2.createGain();
 -------------------------------------------------*/
 $('.play').click(function(){
   if ( first_click == true ) {
-  	
+	// 音程
+	osc.frequency.value = 1200;
+	// 音量を0にしておく
+	gain.gain.value = 0;
+	// 設定を適用
+	osc.connect(gain).connect(context.destination);
+
+	
+	// 音程
+	osc2.frequency.value = 1400;
+	// 音量を0にしておく
+	gain2.gain.value = 0;
+	// 設定を適用
+	osc2.connect(gain2).connect(context2.destination);
+
   }
 
   first_click = false;
