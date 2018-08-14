@@ -156,15 +156,15 @@ const gain2 = context2.createGain();
 -------------------------------------------------*/
 $('.play').click(function(){
   if ( first_click == true ) {
-
-
     // 裏で鳴らしておく
     osc.start(0);
-
-
-    // 裏で鳴らしておく
     osc2.start(0);
   }
+
+  const now2 = current_time();
+  console.log(now2);
+
+  playOn(tempo);
 
   first_click = false;
   isPlaying = true;
@@ -172,7 +172,6 @@ $('.play').click(function(){
   $('.play').hide();
   $('.stop').show();
 
-  playOn(tempo);
 
 });
 
@@ -188,6 +187,9 @@ $('.stop').on(eventType, function(){
   
   gain.gain.cancelScheduledValues(context.currentTime);
   gain2.gain.cancelScheduledValues(context.currentTime);
+
+  gain2.gain.value = 0;
+  gain.gain.value = 0;
   
   $('.anime1 .frame1').hide();
   $('.anime1 .frame2').hide();
@@ -241,15 +243,15 @@ function timestamp_to_audioctx(timeStamp) {
 -------------------------------------------------*/
 function playOn(tempo) {
 
-
   let count = 0;
   let silent_stock = 0;
 
   // The last scheduled click's time in DOMHighResTimeStamp
   let lastClickTimeStamp = performance.now();
 
-  timer1 = setInterval(() => {
-    let tick = 60 * 1000 / tempo;  // for tempo=120
+	let shceduling = function() {
+
+    let tick = 60 * 1000 / tempo;
     let silent_bar = $(".silent_select").val();
 
     const now = current_time();
@@ -276,23 +278,38 @@ function playOn(tempo) {
 
           //　その後素早く(0.05秒で)音の減衰をさせる(ピーではなくピッという音にするため)
           gain.gain.linearRampToValueAtTime(0, nextClickTime + 0.05);
+
         }
+
+        console.log(now);
 
       }
 
-        count = count + 1;
-      silent_stock = silent_stock + 1;
+	        count = count + 1;
+	        silent_stock = silent_stock + 1;
 
-        if ( silent_stock == ( silent_bar * 4 ) * 2 ) { 
-          silent_stock = 0;
-        }
-        
-        // 今鳴らし終えた地点を最後の発音として記録
-        lastClickTimeStamp = nextClickTimeStamp;
-    }
+	        if ( silent_stock == ( silent_bar * 4 ) * 2 ) { 
+	          silent_stock = 0;
+	        }
+	        
+	        // 今鳴らし終えた地点を最後の発音として記録
+	        lastClickTimeStamp = nextClickTimeStamp;
+	    }
 
+	}
+
+
+
+
+  shceduling();
+
+  timer1 = setInterval(() => {
+
+  	shceduling();
 
   }, ( 60 * 1000 / tempo ) /2);
+
+
 }
 
 	
