@@ -179,7 +179,7 @@ function playOn(tempo) {
 
 	    first_tick = false;
 
-       $(".log2").html("root1");
+       $(".log2").html(nextClickTime);
   	
     } else {
 
@@ -188,41 +188,41 @@ function playOn(tempo) {
         nextClickTimeStamp += tick) {
 
       	// 次回の発音時間
-    	nextClickTime = timestamp_to_audioctx(nextClickTimeStamp);
+    	  nextClickTime = timestamp_to_audioctx(nextClickTimeStamp);
 
         if ( silent_stock < ( silent_bar * 4 ) || silent_bar == 0 ) {
 
           //　小節の頭であれば高い音を鳴らす
           if ( count % 4 == 0 ) { 
-          gain2.gain.setValueAtTime(1, nextClickTime);
+            gain2.gain.setValueAtTime(1, nextClickTime);
 
-          //　その後素早く(0.05秒で)音の減衰をさせる(ピーではなくピッという音にするため)
-          gain2.gain.linearRampToValueAtTime(0, nextClickTime + 0.05);
-          console.log(tempo);
+            //　その後素早く(0.05秒で)音の減衰をさせる(ピーではなくピッという音にするため)
+            gain2.gain.linearRampToValueAtTime(0, nextClickTime + 0.05);
+            console.log(tempo);
 
           } else {    
           
-          gain.gain.setValueAtTime(1, nextClickTime);
+            gain.gain.setValueAtTime(1, nextClickTime);
 
-          //　その後素早く(0.05秒で)音の減衰をさせる(ピーではなくピッという音にするため)
-          gain.gain.linearRampToValueAtTime(0, nextClickTime + 0.05);
-          console.log(tempo);
+            //　その後素早く(0.05秒で)音の減衰をさせる(ピーではなくピッという音にするため)
+            gain.gain.linearRampToValueAtTime(0, nextClickTime + 0.05);
+            console.log(tempo);
+
+          }
+
+          $(".log2").html(nextClickTime);
 
         }
 
-        $(".log2").html("root2");
+	      count = count + 1;
+	      silent_stock = silent_stock + 1;
 
-      }
-
-	        count = count + 1;
-	        silent_stock = silent_stock + 1;
-
-	        if ( silent_stock == ( silent_bar * 4 ) * 2 ) { 
-	          silent_stock = 0;
-	        }
+	      if ( silent_stock == ( silent_bar * 4 ) * 2 ) { 
+	        silent_stock = 0;
+	      }
 	        
-	        // 今鳴らし終えた地点を最後の発音として記録
-	        lastClickTimeStamp = nextClickTimeStamp;
+	      // 今鳴らし終えた地点を最後の発音として記録
+	      lastClickTimeStamp = nextClickTimeStamp;
 
 	    }
 
