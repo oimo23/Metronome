@@ -179,7 +179,7 @@ function playOn(tempo) {
 
     	    first_tick = false;
 
-           $(".log2").html(nextClickTime);
+           $(".log2").html("tick!");
       	
         } else {
 
@@ -194,11 +194,13 @@ function playOn(tempo) {
 
                     //　小節の頭であれば高い音を鳴らす
                     if ( count % 4 == 0 ) { 
+
                       gain2.gain.setValueAtTime(1, nextClickTime);
 
                       //　その後素早く(0.05秒で)音の減衰をさせる(ピーではなくピッという音にするため)
                       gain2.gain.linearRampToValueAtTime(0, nextClickTime + 0.05);
                       console.log(tempo);
+                      $(".log2").html("tick!");
 
                     } else {    
                     
@@ -207,10 +209,11 @@ function playOn(tempo) {
                       //　その後素早く(0.05秒で)音の減衰をさせる(ピーではなくピッという音にするため)
                       gain.gain.linearRampToValueAtTime(0, nextClickTime + 0.05);
                       console.log(tempo);
+                      $(".log2").html("tick");
 
                     }
 
-                  $(".log2").html(nextClickTime);
+                  
 
                 //}
 
