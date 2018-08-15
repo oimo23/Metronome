@@ -66,7 +66,6 @@ $('.play').click(function(){
   $('.play').hide();
   $('.stop').show();
 
-
 });
 
 /*-----------------------------------------------
@@ -174,12 +173,9 @@ function playOn(tempo) {
     	    	silent_stock = 0;
     	    }
     	        
-    	    // 今鳴らし終えた地点を最後の発音として記録
-    	    lastClickTimeStamp = performance.now();
-
     	    first_tick = false;
 
-           $(".log2").append().html(nextClickTime);
+           $(".log2").html(lastClickTimeStamp);
       	
         } else {
 
@@ -223,6 +219,17 @@ function playOn(tempo) {
     	      if ( silent_stock == ( silent_bar * 4 ) * 2 ) { 
     	        silent_stock = 0;
     	      }
+
+              if( count % 2 == 0 ) {
+                $('.anime1 .frame0').hide();
+                $('.anime1 .frame1').show();
+                $('.anime1 .frame2').hide();
+              } else {
+                $('.anime1 .frame0').hide();
+                $('.anime1 .frame1').hide();
+                $('.anime1 .frame2').show();  
+              }  
+
     	        
     	      // 今鳴らし終えた地点を最後の発音として記録
     	      lastClickTimeStamp = nextClickTimeStamp;
@@ -231,7 +238,7 @@ function playOn(tempo) {
 
         } // else　終了
 
-          $(".log").html(now);
+        $(".log").html(now);
 
 	}　// scheduling 終了
 
