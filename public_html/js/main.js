@@ -156,7 +156,7 @@ function playOn(tempo) {
 
   	if ( first_tick == true) {
 
-		// 次回の発音時間
+		  // 次回の発音時間
     	nextClickTime = timestamp_to_audioctx(now);
 
     	// 発音
@@ -177,7 +177,6 @@ function playOn(tempo) {
 	    lastClickTimeStamp = performance.now();
 
 	    first_tick = false;
-	    console.log(tempo);
   	}
 
       for (nextClickTimeStamp = lastClickTimeStamp + tick;
@@ -221,6 +220,8 @@ function playOn(tempo) {
 	        // 今鳴らし終えた地点を最後の発音として記録
 	        lastClickTimeStamp = nextClickTimeStamp;
 	    }
+
+      $(".log").html(now);
 
 	}
 
