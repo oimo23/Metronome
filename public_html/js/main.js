@@ -150,11 +150,13 @@ function playOn(tempo) {
         let silent_bar = $(".silent_select").val();
         let nextClickTime;
         let nextClickTimeStamp = lastClickTimeStamp + tick;
+
         tempo = $(".tempo").html();
 
         const now = current_time();
 
-      	if ( first_tick == true) {
+        /*
+      	if ( first_tick == 1) {
 
     		// 次回の発音時間
         	nextClickTime = timestamp_to_audioctx(now);
@@ -178,13 +180,19 @@ function playOn(tempo) {
            $(".log2").html(lastClickTimeStamp);
       	
         } else {
+        */
+        if ( first_tick == true) {
+            lastClickTimeStamp = lastClickTimeStamp - tick;
+            first_tick = false;
+        }
 
           for (nextClickTimeStamp = lastClickTimeStamp + tick;
             nextClickTimeStamp < now + 1500;
             nextClickTimeStamp += tick) {
 
-              	// 次回の発音時間
-            	nextClickTime = timestamp_to_audioctx(nextClickTimeStamp);
+
+                    // 次回の発音時間
+                    nextClickTime = timestamp_to_audioctx(nextClickTimeStamp);
 
                 //if ( silent_stock < ( silent_bar * 4 ) || silent_bar == 0 ) {
 
@@ -195,7 +203,6 @@ function playOn(tempo) {
 
                       //　その後素早く(0.05秒で)音の減衰をさせる(ピーではなくピッという音にするため)
                       gain2.gain.linearRampToValueAtTime(0, nextClickTime + 0.05);
-                      console.log(tempo);
                       $(".log2").append().html(nextClickTime);
 
                     } else {    
@@ -204,7 +211,6 @@ function playOn(tempo) {
 
                       //　その後素早く(0.05秒で)音の減衰をさせる(ピーではなくピッという音にするため)
                       gain.gain.linearRampToValueAtTime(0, nextClickTime + 0.05);
-                      console.log(tempo);
                       $(".log2").append().html(nextClickTime);
 
                     }
@@ -230,13 +236,15 @@ function playOn(tempo) {
                 $('.anime1 .frame2').show();  
               }  
 
-    	        
+
+
     	      // 今鳴らし終えた地点を最後の発音として記録
     	      lastClickTimeStamp = nextClickTimeStamp;
 
+
     	    } // for 終了
 
-        } // else　終了
+        //} // else　終了
 
         $(".log").html(now);
 
