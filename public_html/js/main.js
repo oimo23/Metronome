@@ -146,6 +146,8 @@ function playOn(tempo) {
 	let first_tick = true;
 	let lastClickTimeStamp = performance.now();
 
+	alert(lastClickTimeStamp);
+
 	// メインのスケジューリング処理
 	let shceduling = function() {
 
@@ -159,6 +161,7 @@ function playOn(tempo) {
 		const now = current_time();
 
 		if ( first_tick == true) {
+
 			lastClickTimeStamp = lastClickTimeStamp - tick;
 			first_tick = false;
 		}
