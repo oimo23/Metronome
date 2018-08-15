@@ -180,7 +180,8 @@ function playOn(tempo) {
 	    first_tick = false;
 
        $(".log2").html("root1");
-  	}
+  	
+    } else {
 
       for (nextClickTimeStamp = lastClickTimeStamp + tick;
         nextClickTimeStamp < now + 1500;
@@ -224,6 +225,8 @@ function playOn(tempo) {
 	        lastClickTimeStamp = nextClickTimeStamp;
 
 	    }
+
+    }
 
       $(".log").html(now);
 
