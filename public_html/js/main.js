@@ -150,7 +150,6 @@ function playOn(tempo) {
 	let shceduling = function() {
 
 		let tick = 60 * 1000 / tempo;
-		let silent_bar = $(".silent_select").val();
 		let nextClickTime;
 		let nextClickTimeStamp = lastClickTimeStamp + tick;
 
@@ -167,6 +166,8 @@ function playOn(tempo) {
 		for (nextClickTimeStamp = lastClickTimeStamp + tick;
 			nextClickTimeStamp < now + 1500;
 			nextClickTimeStamp += tick) {
+
+			let silent_bar = $(".silent_select").val();
 
 			// 次回の発音時間
 			nextClickTime = timestamp_to_audioctx(nextClickTimeStamp);
@@ -228,7 +229,7 @@ function playOn(tempo) {
 	// その後繰り返し処理へ
 	timer1 = setInterval(() => {
 		shceduling();
-	}, ( 60 * 1000 / tempo ) /2);
+	}, ( 60 * 1000 / tempo ) / 2);
 
 
 }
