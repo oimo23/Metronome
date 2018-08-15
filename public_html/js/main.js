@@ -157,7 +157,7 @@ function playOn(tempo) {
 
       	if ( first_tick == true) {
 
-    		  // 次回の発音時間
+    		// 次回の発音時間
         	nextClickTime = timestamp_to_audioctx(now);
 
         	// 発音
@@ -179,7 +179,9 @@ function playOn(tempo) {
 
     	    first_tick = false;
 
-           $(".log2").html("tick!");
+           $(".log2").html(nextClickTimeStamp - lastClickTimeStamp);
+
+           nextClickTimeStamp += tick
       	
         } else {
 
@@ -200,7 +202,7 @@ function playOn(tempo) {
                       //　その後素早く(0.05秒で)音の減衰をさせる(ピーではなくピッという音にするため)
                       gain2.gain.linearRampToValueAtTime(0, nextClickTime + 0.05);
                       console.log(tempo);
-                      $(".log2").html("tick!");
+                      $(".log2").html(nextClickTimeStamp - lastClickTimeStamp);
 
                     } else {    
                     
@@ -209,7 +211,7 @@ function playOn(tempo) {
                       //　その後素早く(0.05秒で)音の減衰をさせる(ピーではなくピッという音にするため)
                       gain.gain.linearRampToValueAtTime(0, nextClickTime + 0.05);
                       console.log(tempo);
-                      $(".log2").html("tick");
+                      $(".log2").html(nextClickTimeStamp - lastClickTimeStamp);
 
                     }
 
