@@ -145,93 +145,92 @@ function playOn(tempo) {
   // The last scheduled click's time in DOMHighResTimeStamp
   let lastClickTimeStamp = performance.now();
 
-	let shceduling = function() {
+    let shceduling = function() {
 
-    let tick = 60 * 1000 / tempo;
-    let silent_bar = $(".silent_select").val();
-    let nextClickTime;
-    let nextClickTimeStamp = lastClickTimeStamp + tick;
-    tempo = $(".tempo").html();
+        let tick = 60 * 1000 / tempo;
+        let silent_bar = $(".silent_select").val();
+        let nextClickTime;
+        let nextClickTimeStamp = lastClickTimeStamp + tick;
+        tempo = $(".tempo").html();
 
-    const now = current_time();
+        const now = current_time();
 
-  	if ( first_tick == true) {
+      	if ( first_tick == true) {
 
-		  // 次回の発音時間
-    	nextClickTime = timestamp_to_audioctx(now);
+    		  // 次回の発音時間
+        	nextClickTime = timestamp_to_audioctx(now);
 
-    	// 発音
-    	gain2.gain.setValueAtTime(1, nextClickTime);
-        //　その後素早く(0.05秒で)音の減衰をさせる(ピーではなくピッという音にするため)
-        gain2.gain.linearRampToValueAtTime(0, nextClickTime + 0.05);
-
-        // 拍数カウント
-        count = count + 1;
-
-	    // 消音制御
-	    silent_stock = silent_stock + 1;	    	
-	    if ( silent_stock == ( silent_bar * 4 ) * 2 ) { 
-	    	silent_stock = 0;
-	    }
-	        
-	    // 今鳴らし終えた地点を最後の発音として記録
-	    lastClickTimeStamp = performance.now();
-
-	    first_tick = false;
-
-       $(".log2").html(nextClickTime);
-  	
-    } else {
-
-      for (nextClickTimeStamp = lastClickTimeStamp + tick;
-        nextClickTimeStamp < now + 1500;
-        nextClickTimeStamp += tick) {
-
-      	// 次回の発音時間
-    	  nextClickTime = timestamp_to_audioctx(nextClickTimeStamp);
-
-        if ( silent_stock < ( silent_bar * 4 ) || silent_bar == 0 ) {
-
-          //　小節の頭であれば高い音を鳴らす
-          if ( count % 4 == 0 ) { 
-            gain2.gain.setValueAtTime(1, nextClickTime);
-
+        	// 発音
+        	gain2.gain.setValueAtTime(1, nextClickTime);
             //　その後素早く(0.05秒で)音の減衰をさせる(ピーではなくピッという音にするため)
             gain2.gain.linearRampToValueAtTime(0, nextClickTime + 0.05);
-            console.log(tempo);
 
-          } else {    
-          
-            gain.gain.setValueAtTime(1, nextClickTime);
+            // 拍数カウント
+            count = count + 1;
 
-            //　その後素早く(0.05秒で)音の減衰をさせる(ピーではなくピッという音にするため)
-            gain.gain.linearRampToValueAtTime(0, nextClickTime + 0.05);
-            console.log(tempo);
+    	    // 消音制御
+    	    silent_stock = silent_stock + 1;	    	
+    	    if ( silent_stock == ( silent_bar * 4 ) * 2 ) { 
+    	    	silent_stock = 0;
+    	    }
+    	        
+    	    // 今鳴らし終えた地点を最後の発音として記録
+    	    lastClickTimeStamp = performance.now();
 
-          }
+    	    first_tick = false;
 
-          $(".log2").html(nextClickTime);
+           $(".log2").html(nextClickTime);
+      	
+        } else {
 
-        }
+          for (nextClickTimeStamp = lastClickTimeStamp + tick;
+            nextClickTimeStamp < now + 1500;
+            nextClickTimeStamp += tick) {
 
-	      count = count + 1;
-	      silent_stock = silent_stock + 1;
+              	// 次回の発音時間
+            	nextClickTime = timestamp_to_audioctx(nextClickTimeStamp);
 
-	      if ( silent_stock == ( silent_bar * 4 ) * 2 ) { 
-	        silent_stock = 0;
-	      }
-	        
-	      // 今鳴らし終えた地点を最後の発音として記録
-	      lastClickTimeStamp = nextClickTimeStamp;
+                //if ( silent_stock < ( silent_bar * 4 ) || silent_bar == 0 ) {
 
-	    }
+                    //　小節の頭であれば高い音を鳴らす
+                    if ( count % 4 == 0 ) { 
+                      gain2.gain.setValueAtTime(1, nextClickTime);
 
-    }
+                      //　その後素早く(0.05秒で)音の減衰をさせる(ピーではなくピッという音にするため)
+                      gain2.gain.linearRampToValueAtTime(0, nextClickTime + 0.05);
+                      console.log(tempo);
 
-      $(".log").html(now);
+                    } else {    
+                    
+                      gain.gain.setValueAtTime(1, nextClickTime);
 
+                      //　その後素早く(0.05秒で)音の減衰をさせる(ピーではなくピッという音にするため)
+                      gain.gain.linearRampToValueAtTime(0, nextClickTime + 0.05);
+                      console.log(tempo);
 
-	}
+                    //}
+
+                  $(".log2").html(nextClickTime);
+
+                }
+
+    	      count = count + 1;
+    	      silent_stock = silent_stock + 1;
+
+    	      if ( silent_stock == ( silent_bar * 4 ) * 2 ) { 
+    	        silent_stock = 0;
+    	      }
+    	        
+    	      // 今鳴らし終えた地点を最後の発音として記録
+    	      lastClickTimeStamp = nextClickTimeStamp;
+
+    	    } // for 終了
+
+        } // else　終了
+
+          $(".log").html(now);
+
+	}　// scheduling 終了
 
   shceduling();
 
