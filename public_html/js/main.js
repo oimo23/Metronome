@@ -140,6 +140,7 @@ function playOn(tempo) {
   let count = 0;
   let silent_stock = 0;
   let first_tick = true;
+  tempo = $(".tempo").html();
 
   // The last scheduled click's time in DOMHighResTimeStamp
   let lastClickTimeStamp = performance.now();
@@ -177,6 +178,8 @@ function playOn(tempo) {
 	    lastClickTimeStamp = performance.now();
 
 	    first_tick = false;
+
+       $(".log2").html("root1");
   	}
 
       for (nextClickTimeStamp = lastClickTimeStamp + tick;
@@ -206,7 +209,7 @@ function playOn(tempo) {
 
         }
 
-       
+        $(".log2").html("root2");
 
       }
 
@@ -219,9 +222,11 @@ function playOn(tempo) {
 	        
 	        // 今鳴らし終えた地点を最後の発音として記録
 	        lastClickTimeStamp = nextClickTimeStamp;
+
 	    }
 
       $(".log").html(now);
+
 
 	}
 
