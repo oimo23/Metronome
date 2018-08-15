@@ -208,11 +208,11 @@ function playOn(tempo) {
                       gain.gain.linearRampToValueAtTime(0, nextClickTime + 0.05);
                       console.log(tempo);
 
-                    //}
+                    }
 
                   $(".log2").html(nextClickTime);
 
-                }
+                //}
 
     	      count = count + 1;
     	      silent_stock = silent_stock + 1;
