@@ -150,6 +150,7 @@ function playOn(tempo) {
     let silent_bar = $(".silent_select").val();
     let nextClickTime;
     let nextClickTimeStamp = lastClickTimeStamp + tick;
+    tempo = $(".tempo").html();
 
     const now = current_time();
 
@@ -176,7 +177,7 @@ function playOn(tempo) {
 	    lastClickTimeStamp = performance.now();
 
 	    first_tick = false;
-	    console.log("tick1");
+	    console.log(tempo);
   	}
 
       for (nextClickTimeStamp = lastClickTimeStamp + tick;
@@ -194,7 +195,7 @@ function playOn(tempo) {
 
           //　その後素早く(0.05秒で)音の減衰をさせる(ピーではなくピッという音にするため)
           gain2.gain.linearRampToValueAtTime(0, nextClickTime + 0.05);
-          console.log("tick2");
+          console.log(tempo);
 
           } else {    
           
@@ -202,7 +203,7 @@ function playOn(tempo) {
 
           //　その後素早く(0.05秒で)音の減衰をさせる(ピーではなくピッという音にするため)
           gain.gain.linearRampToValueAtTime(0, nextClickTime + 0.05);
-          console.log("tick3");
+          console.log(tempo);
 
         }
 
