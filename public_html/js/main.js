@@ -1,3 +1,6 @@
+/*-----------------------------------------------
+// Meterialize.css用初期化
+-------------------------------------------------*/
 $(document).ready(function(){
   $('select').formSelect();
 });
@@ -19,14 +22,14 @@ const context = new(window.AudioContext||window.webkitAudioContext)();
 const osc = context.createOscillator();
 const gain = context.createGain();
 
-	// 音程
-	osc.frequency.value = 1200;
-	// 音量を0にしておく
-	gain.gain.value = 0;
+// 音程
+osc.frequency.value = 1200;
+// 音量を0にしておく
+gain.gain.value = 0;
 
-	// 設定を適用
-	osc.connect(gain);
-	gain.connect(context.destination);
+// 設定を適用
+osc.connect(gain);
+gain.connect(context.destination);
 
 
 /*-----------------------------------------------
@@ -36,23 +39,23 @@ const context2 = new(window.AudioContext||window.webkitAudioContext)();
 const osc2 = context2.createOscillator();
 const gain2 = context2.createGain();
 
-	// 音程
-	osc2.frequency.value = 1400;
-	// 音量を0にしておく
-	gain2.gain.value = 0;
+// 音程
+osc2.frequency.value = 1400;
+// 音量を0にしておく
+gain2.gain.value = 0;
 
-	// 設定を適用
-	osc2.connect(gain2);
-	gain2.connect(context2.destination);
+// 設定を適用
+osc2.connect(gain2);
+gain2.connect(context2.destination);
 
 /*-----------------------------------------------
 // 再生処理 
 -------------------------------------------------*/
 $('.play').click(function(){
   if ( first_click == true ) {
-    // 裏で鳴らしておく
-    osc.start(0);
-    osc2.start(0);
+	// 裏で鳴らしておく
+	osc.start(0);
+	osc2.start(0);
   }
 
   const now2 = current_time();
@@ -65,7 +68,6 @@ $('.play').click(function(){
 
   $('.play').hide();
   $('.stop').show();
-
 
 });
 
@@ -90,12 +92,13 @@ $('.stop').on(eventType, function(){
   $('.anime1 .frame0').show();
 });
 
-// テンポ設定
-let tempo = 120;
 
 /*-----------------------------------------------
 // テンポ操作
 -------------------------------------------------*/
+// テンポ設定
+let tempo = 120;
+
 $('.tempo1_up').on(eventType, function(){
   tempo = tempo + 1;
   $('.tempo').text(tempo);
@@ -137,99 +140,94 @@ function timestamp_to_audioctx(timeStamp) {
 -------------------------------------------------*/
 function playOn(tempo) {
 
-  let count = 0;
-  let silent_stock = 0;
-  let first_tick = true;
+	// 変数の用意
+	let count = 0;
+	let silent_stock = 0;
+	let first_tick = true;
+	let lastClickTimeStamp = performance.now();
 
-  // The last scheduled click's time in DOMHighResTimeStamp
-  let lastClickTimeStamp = performance.now();
-
+	// メインのスケジューリング処理
 	let shceduling = function() {
 
-    let tick = 60 * 1000 / tempo;
-    let silent_bar = $(".silent_select").val();
-    let nextClickTime;
-    let nextClickTimeStamp = lastClickTimeStamp + tick;
+		let tick = 60 * 1000 / tempo;
+		let silent_bar = $(".silent_select").val();
+		let nextClickTime;
+		let nextClickTimeStamp = lastClickTimeStamp + tick;
 
-    const now = current_time();
+		tempo = $(".tempo").html();
 
-  	if ( first_tick == true) {
+		const now = current_time();
 
-		// 次回の発音時間
-    	nextClickTime = timestamp_to_audioctx(now);
+		if ( first_tick == true) {
+			lastClickTimeStamp = lastClickTimeStamp - tick;
+			first_tick = false;
+		}
 
-    	// 発音
-    	gain2.gain.setValueAtTime(1, nextClickTime);
-        //　その後素早く(0.05秒で)音の減衰をさせる(ピーではなくピッという音にするため)
-        gain2.gain.linearRampToValueAtTime(0, nextClickTime + 0.05);
+		for (nextClickTimeStamp = lastClickTimeStamp + tick;
+			nextClickTimeStamp < now + 1500;
+			nextClickTimeStamp += tick) {
 
-        // 拍数カウント
-        count = count + 1;
+			// 次回の発音時間
+			nextClickTime = timestamp_to_audioctx(nextClickTimeStamp);
 
-	    // 消音制御
-	    silent_stock = silent_stock + 1;	    	
-	    if ( silent_stock == ( silent_bar * 4 ) * 2 ) { 
-	    	silent_stock = 0;
-	    }
-	        
-	    // 今鳴らし終えた地点を最後の発音として記録
-	    lastClickTimeStamp = performance.now();
+			if ( silent_stock < ( silent_bar * 4 ) || silent_bar == 0 ) {
 
-	    first_tick = false;
-	    console.log("tick1");
-  	}
+				//　小節の頭であれば高い音を鳴らす
+				if ( count % 4 == 0 ) { 
 
-      for (nextClickTimeStamp = lastClickTimeStamp + tick;
-        nextClickTimeStamp < now + 1500;
-        nextClickTimeStamp += tick) {
+					// 指定時間に音量を上げる
+					gain2.gain.setValueAtTime(1, nextClickTime);
 
-      	// 次回の発音時間
-    	nextClickTime = timestamp_to_audioctx(nextClickTimeStamp);
+					//　その後素早く(0.05秒で)音の減衰をさせる(ピーではなくピッという音にするため)
+					gain2.gain.linearRampToValueAtTime(0, nextClickTime + 0.05);
+				
+				//　それ以外なら低い音
+				} else {    
+					
+					// 指定時間に音量を上げる
+					gain.gain.setValueAtTime(1, nextClickTime);
 
-        if ( silent_stock < ( silent_bar * 4 ) || silent_bar == 0 ) {
+					//　その後素早く(0.05秒で)音の減衰をさせる(ピーではなくピッという音にするため)
+					gain.gain.linearRampToValueAtTime(0, nextClickTime + 0.05);
 
-          //　小節の頭であれば高い音を鳴らす
-          if ( count % 4 == 0 ) { 
-          gain2.gain.setValueAtTime(1, nextClickTime);
+				}
 
-          //　その後素早く(0.05秒で)音の減衰をさせる(ピーではなくピッという音にするため)
-          gain2.gain.linearRampToValueAtTime(0, nextClickTime + 0.05);
-          console.log("tick2");
+			}
 
-          } else {    
-          
-          gain.gain.setValueAtTime(1, nextClickTime);
+			// 拍数カウント・消音用カウント制御
+			count = count + 1;
+			silent_stock = silent_stock + 1;
 
-          //　その後素早く(0.05秒で)音の減衰をさせる(ピーではなくピッという音にするため)
-          gain.gain.linearRampToValueAtTime(0, nextClickTime + 0.05);
-          console.log("tick3");
+			if ( silent_stock == ( silent_bar * 4 ) * 2 ) { 
+				silent_stock = 0;
+			}
 
-        }
+			// アニメーション処理
+			if( count % 2 == 0 ) {
+				$('.anime1 .frame0').hide();
+				$('.anime1 .frame1').show();
+				$('.anime1 .frame2').hide();
+			} else {
+				$('.anime1 .frame0').hide();
+				$('.anime1 .frame1').hide();
+				$('.anime1 .frame2').show();  
+			}  
 
-       
+			// 今鳴らし終えた地点を最後の発音として記録
+			lastClickTimeStamp = nextClickTimeStamp;
 
-      }
+		} // for 終了
 
-	        count = count + 1;
-	        silent_stock = silent_stock + 1;
+	}　// scheduling 終了
 
-	        if ( silent_stock == ( silent_bar * 4 ) * 2 ) { 
-	          silent_stock = 0;
-	        }
-	        
-	        // 今鳴らし終えた地点を最後の発音として記録
-	        lastClickTimeStamp = nextClickTimeStamp;
-	    }
 
-	}
+	//　最初は待機しなくて良いので1度即実行
+	shceduling();
 
-  shceduling();
-
-  timer1 = setInterval(() => {
-
-  	shceduling();
-
-  }, ( 60 * 1000 / tempo ) /2);
+	// その後繰り返し処理へ
+	timer1 = setInterval(() => {
+		shceduling();
+	}, ( 60 * 1000 / tempo ) /2);
 
 
 }
