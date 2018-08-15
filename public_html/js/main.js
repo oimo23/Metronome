@@ -84,8 +84,8 @@ $('.stop').on(eventType, function(){
   gain.gain.cancelScheduledValues(context.currentTime);
   gain2.gain.cancelScheduledValues(context.currentTime);
 
-  gain2.gain.value = 0;
-  gain.gain.value = 0;
+	gain.gain.linearRampToValueAtTime(0, context.currentTime + 0.05);
+	gain2.gain.linearRampToValueAtTime(0, context.currentTime + 0.05);
   
   $('.anime1 .frame1').hide();
   $('.anime1 .frame2').hide();
@@ -146,8 +146,6 @@ function playOn(tempo) {
 	let first_tick = true;
 	let lastClickTimeStamp = performance.now();
 
-	alert(lastClickTimeStamp);
-
 	// メインのスケジューリング処理
 	let shceduling = function() {
 
@@ -162,7 +160,7 @@ function playOn(tempo) {
 
 		if ( first_tick == true) {
 
-			lastClickTimeStamp = lastClickTimeStamp - tick;
+			lastClickTimeStamp = now - tick;
 			first_tick = false;
 		}
 
