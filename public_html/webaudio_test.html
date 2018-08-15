@@ -1,3 +1,108 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>メトロノーム</title>
+<meta name="description" content="">
+<meta name="keywords" content="">
+<meta name="robots" contents="noindex,nofollow">
+
+<link href="https://fonts.googleapis.com/css?family=Pacifico" rel="stylesheet">
+
+<link href="./css/materialize.css" rel="stylesheet" type="text/css" media="all">
+<link href="./css/common.css" rel="stylesheet" type="text/css" media="all">
+<link href="./css/styles.css" rel="stylesheet" type="text/css" media="all">
+<link rel="shortcut icon" href="./images/favicon.ico"> 
+
+<!-- jQuery library (served from Google) -->
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js" type="text/javascript"></script>
+<script src="./js/materialize.js" type="text/javascript"></script>
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
+
+<meta name="viewport" content="width=device-width,initial-scale=1">
+  
+</head>
+<body>
+
+<div class="wrapper">
+
+  <div class="left_side">
+    <!--<p class="flash">●</p>-->
+    <div class="anime1">
+      <p class="frame0"><img src="./images/crossing0.png"></p>
+      <p class="frame1"><img src="./images/crossing1.png"></p>
+      <p class="frame2"><img src="./images/crossing2.png"></p>
+    </div>
+  </div>
+  
+  <div class="right_side">  
+  
+    <div class="right_side_wrapper">
+  
+      <h1 class="center logo">Metronome</h1>
+    
+      <div class="display">
+        <div class="tempo">120</div>
+      </div>
+      
+      <div class="time_signature">
+        <p class="center">4/4</p>
+      </div>  
+      
+      <div class="flex_list ctrl_panel">
+        <div class="player">
+          <ul class="flex_list">
+            <li class="play"><i class="fas fa-play"></i></li>
+            <li class="stop"><i class="fas fa-stop"></i></li>
+          </ul>
+        </div>
+        
+        <div class="speed_ctrl">
+          <ul class="flex_list">
+            <li class="tempo1_down"><</li>
+            <li class="tempo1_up">></li>
+          </ul>
+          <ul class="flex_list">
+            <li class="tempo5_down">-5</li>
+            <li class="tempo5_up">+5</li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="prog center">   
+        <!--
+        <p class="training_trigger">Training mode</p>
+        <div class="training">      
+          <input type="text">～<input type="text">
+          
+          <input type="text">bars
+        </div>
+        -->
+
+        <div class="silent">
+          <div class="input-field col s12">
+            <select class="silent_select">
+              <option value="0" selected>Enable Silent Bars</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+            </select>
+          </div>
+        </div>
+    
+      </div>
+
+    
+    </div>    
+  
+  </div>
+
+</div>
+
+
+<script>
 $(document).ready(function(){
   $('select').formSelect();
 });
@@ -19,16 +124,6 @@ const context = new(window.AudioContext||window.webkitAudioContext)();
 const osc = context.createOscillator();
 const gain = context.createGain();
 
-	// 音程
-	osc.frequency.value = 1200;
-	// 音量を0にしておく
-	gain.gain.value = 0;
-
-	// 設定を適用
-	osc.connect(gain);
-	gain.connect(context.destination);
-
-
 /*-----------------------------------------------
 // 高い音の準備
 -------------------------------------------------*/
@@ -36,36 +131,29 @@ const context2 = new(window.AudioContext||window.webkitAudioContext)();
 const osc2 = context2.createOscillator();
 const gain2 = context2.createGain();
 
-	// 音程
-	osc2.frequency.value = 1400;
-	// 音量を0にしておく
-	gain2.gain.value = 0;
-
-	// 設定を適用
-	osc2.connect(gain2);
-	gain2.connect(context2.destination);
+alert('hello');
 
 /*-----------------------------------------------
 // 再生処理 
 -------------------------------------------------*/
 $('.play').click(function(){
+
   if ( first_click == true ) {
     // 裏で鳴らしておく
     osc.start(0);
+
+    // 裏で鳴らしておく
     osc2.start(0);
   }
 
-  const now2 = current_time();
-  console.log(now2);
-
-  playOn(tempo);
-
   first_click = false;
   isPlaying = true;
-
   $('.play').hide();
   $('.stop').show();
+  playOn(tempo);
+});
 
+$('.tempo').click(function(){
 
 });
 
@@ -75,16 +163,10 @@ $('.play').click(function(){
 $('.stop').on(eventType, function(){
   $('.stop').hide();
   $('.play').show();
-
   isPlaying = false;
   clearInterval(timer1);
-  
   gain.gain.cancelScheduledValues(context.currentTime);
   gain2.gain.cancelScheduledValues(context.currentTime);
-
-  gain2.gain.value = 0;
-  gain.gain.value = 0;
-  
   $('.anime1 .frame1').hide();
   $('.anime1 .frame2').hide();
   $('.anime1 .frame0').show();
@@ -136,56 +218,25 @@ function timestamp_to_audioctx(timeStamp) {
 // スケジューリング
 -------------------------------------------------*/
 function playOn(tempo) {
-
   let count = 0;
   let silent_stock = 0;
-  let first_tick = true;
 
   // The last scheduled click's time in DOMHighResTimeStamp
   let lastClickTimeStamp = performance.now();
 
-	let shceduling = function() {
-
-    let tick = 60 * 1000 / tempo;
+  timer1 = setInterval(() => {
+    let tick = 60 * 1000 / tempo;  // for tempo=120
     let silent_bar = $(".silent_select").val();
-    let nextClickTime;
-    let nextClickTimeStamp = lastClickTimeStamp + tick;
 
     const now = current_time();
 
-  	if ( first_tick == true) {
-
-		// 次回の発音時間
-    	nextClickTime = timestamp_to_audioctx(now);
-
-    	// 発音
-    	gain2.gain.setValueAtTime(1, nextClickTime);
-        //　その後素早く(0.05秒で)音の減衰をさせる(ピーではなくピッという音にするため)
-        gain2.gain.linearRampToValueAtTime(0, nextClickTime + 0.05);
-
-        // 拍数カウント
-        count = count + 1;
-
-	    // 消音制御
-	    silent_stock = silent_stock + 1;	    	
-	    if ( silent_stock == ( silent_bar * 4 ) * 2 ) { 
-	    	silent_stock = 0;
-	    }
-	        
-	    // 今鳴らし終えた地点を最後の発音として記録
-	    lastClickTimeStamp = performance.now();
-
-	    first_tick = false;
-	    console.log("tick1");
-  	}
-
-      for (nextClickTimeStamp = lastClickTimeStamp + tick;
+      for (let nextClickTimeStamp = lastClickTimeStamp + tick;
         nextClickTimeStamp < now + 1500;
         nextClickTimeStamp += tick) {
 
-      	// 次回の発音時間
-    	nextClickTime = timestamp_to_audioctx(nextClickTimeStamp);
-
+        // 次回の発音時間
+        const nextClickTime = timestamp_to_audioctx(nextClickTimeStamp);
+        
         if ( silent_stock < ( silent_bar * 4 ) || silent_bar == 0 ) {
 
           //　小節の頭であれば高い音を鳴らす
@@ -194,42 +245,28 @@ function playOn(tempo) {
 
           //　その後素早く(0.05秒で)音の減衰をさせる(ピーではなくピッという音にするため)
           gain2.gain.linearRampToValueAtTime(0, nextClickTime + 0.05);
-          console.log("tick2");
-
           } else {    
-          
           gain.gain.setValueAtTime(1, nextClickTime);
 
           //　その後素早く(0.05秒で)音の減衰をさせる(ピーではなくピッという音にするため)
           gain.gain.linearRampToValueAtTime(0, nextClickTime + 0.05);
-          console.log("tick3");
-
         }
-
-       
 
       }
 
-	        count = count + 1;
-	        silent_stock = silent_stock + 1;
+        count = count + 1;
+      silent_stock = silent_stock + 1;
 
-	        if ( silent_stock == ( silent_bar * 4 ) * 2 ) { 
-	          silent_stock = 0;
-	        }
-	        
-	        // 今鳴らし終えた地点を最後の発音として記録
-	        lastClickTimeStamp = nextClickTimeStamp;
-	    }
+        if ( silent_stock == ( silent_bar * 4 ) * 2 ) { 
+          silent_stock = 0;
+        }
+        
+        // 今鳴らし終えた地点を最後の発音として記録
+        lastClickTimeStamp = nextClickTimeStamp;
+    }
 
-	}
-
-  shceduling();
-
-  timer1 = setInterval(() => {
-
-  	shceduling();
 
   }, ( 60 * 1000 / tempo ) /2);
-
-
 }
+
+</script>
