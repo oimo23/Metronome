@@ -51,7 +51,7 @@ gain2.connect(context2.destination);
 /*-----------------------------------------------
 // 再生処理 
 -------------------------------------------------*/
-$('.play').click(function(){
+$('.play').on(eventType, function(){
   if ( first_click == true ) {
 	// 裏で鳴らしておく
 	osc.start(0);
@@ -100,24 +100,26 @@ $('.stop').on(eventType, function(){
 let tempo = 120;
 
 $('.tempo1_up').on(eventType, function(){
-  tempo = tempo + 1;
-  $('.tempo').text(tempo);
+	tempo_change(1);
 });
 
 $('.tempo1_down').on(eventType, function(){
-  tempo = tempo - 1;
-  $('.tempo').text(tempo);
+	tempo_change(-1);
 });
 
 $('.tempo5_up').on(eventType, function(){
-  tempo = tempo + 5;
-  $('.tempo').text(tempo);
+	tempo_change(5);
 });
 
 $('.tempo5_down').on(eventType, function(){
-  tempo = tempo - 5;
-  $('.tempo').text(tempo);
+	tempo_change(-5);
 });
+
+function tempo_change(num) {
+	if( tempo <= 40 || tempo >= 250 ) { return };
+	tempo = tempo + num;
+	$('.tempo').text(tempo);
+}
 
 /*-----------------------------------------------
 // クロックの設定
