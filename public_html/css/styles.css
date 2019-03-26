@@ -33,14 +33,14 @@ body {
 .left_side {
 	width : 60% ;
 	background : #FF9696 ;
-	display: flex;
+	display: none;
   	justify-content: center;
   	align-items: center;
 }
 
 .right_side {
 	padding : 10px ;
-	width : 40% ;
+	width : 100% ;
 	height : 100vh ;
 	display: flex;
   	justify-content: center;
@@ -51,6 +51,7 @@ body {
 	position : relative ;
 	top : -5% ;
 	max-width: 100%;
+	width: 350px;
 }
 
 .flex_list {
@@ -84,7 +85,6 @@ body {
 	left : 20px ;
 	top : -3px ;
 	font-size : 80px ;
-	display: none ;
 	margin-bottom : -20px ;
 }
 
@@ -99,7 +99,7 @@ body {
 }
 
 .stop {
-	display : none ;
+
 }
 
 .speed_ctrl ul {
