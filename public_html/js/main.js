@@ -74,7 +74,7 @@ new Vue({
       		this.gain.gain.value = 1;
       		setTimeout(()=>this.gain.gain.value = 0, 30);
 
-			this.timer1 = setTimeout(()=> this.scheduling(), this.tick);
+      		this.timer1 = setTimeout(()=> this.scheduling(), this.tick);
       		this.timer2 = setTimeout(()=> this.flash = false, 20 );
 
       		this.count++;
