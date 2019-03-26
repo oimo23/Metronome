@@ -15,7 +15,7 @@ jobs:
               aws s3 sync ./public_html s3://oimo-tools.com/metronome/ --exact-timestamps
             fi
       - run:
-          name: Deploy to Developplace if branch is Master.
+          name: Deploy to Developplace if branch is Develop.
           command: |
             if [ "${CIRCLE_BRANCH}" == "develop" ]; then
               aws s3 sync ./public_html s3://oimo-tools.com/develop/ --exact-timestamps
