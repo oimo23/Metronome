@@ -13,6 +13,9 @@ new Vue({
 		osc: null,
 		gain: null,
 		context: null,
+		osc2: null,
+		gain2: null,
+		context2: null,
 		timer1: null,
 		timer2: null,
 	},
@@ -24,6 +27,7 @@ new Vue({
 			// 初回クリックであれば、モバイルのミュート対策のため裏で鳴らしておく
 			if ( this.firstClick == true ) {
 				this.osc.start(0);
+				this.osc2.start(0);
 			}
 			
 			this.lastClickTimeStamp = performance.now();	
@@ -63,17 +67,13 @@ new Vue({
 
 			// １拍目なら高い音、それ以外なら低い音にする
 			if(this.count % parseInt(this.times.split("/")[0]) === 0 || this.count === 0) {
-				this.osc.frequency.value = 1400;
-				console.log(this.count);
-				console.log("head!");
+				this.gain.gain.value = 1;
+      			setTimeout(()=>this.gain.gain.value = 0, 30);
 			} else {
-				this.osc.frequency.value = 1200;
-				console.log("tick!");
+				this.gain2.gain.value = 1;
+      			setTimeout(()=>this.gain2.gain.value = 0, 30);
 			}
-      		
-      		this.gain.gain.value = 1;
-      		setTimeout(()=>this.gain.gain.value = 0, 30);
-
+      	
       		this.timer1 = setTimeout(()=> this.scheduling(), this.tick);
       		this.timer2 = setTimeout(()=> this.flash = false, 20 );
 
@@ -82,14 +82,26 @@ new Vue({
 	},
 	created: function() {
 		// Web Audio API　を使用してメトロノーム音の作成を行っておく
+		// 高い音
 		this.context = new(window.AudioContext||window.webkitAudioContext)();
 		this.osc = this.context.createOscillator();
 		this.gain = this.context.createGain();
 		
-		this.osc.frequency.value = 1400;
+		this.osc.frequency.value = 1200;
     	this.gain.gain.value = 0;
 
 		this.osc.connect(this.gain);
 		this.gain.connect(this.context.destination);
+
+		// 低い音
+		this.context2 = new(window.AudioContext||window.webkitAudioContext)();
+		this.osc2 = this.context2.createOscillator();
+		this.gain2 = this.context2.createGain();
+		
+		this.osc2.frequency.value = 1000;
+    	this.gain2.gain.value = 0;
+
+		this.osc2.connect(this.gain2);
+		this.gain2.connect(this.context2.destination);
 	}
 });
